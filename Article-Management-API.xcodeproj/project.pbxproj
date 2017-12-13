@@ -93,21 +93,61 @@
 		FE3E66DA1FDE227C00FD3477 /* Article-Management-API */ = {
 			isa = PBXGroup;
 			children = (
-				FEF7D61E1FDEE20200D87E37 /* ArticlePresenterProtocol.swift */,
-				FEF7D6201FDEE22800D87E37 /* ArticlePresenter.swift */,
-				FEDFD42F1FDE243800040C29 /* Article.swift */,
+				FEC3A26E1FDFCB8700F77767 /* Presenter */,
+				FEC3A26C1FDFCB4C00F77767 /* Model */,
 				FE3E66DB1FDE227C00FD3477 /* AppDelegate.swift */,
-				FE3E66DD1FDE227C00FD3477 /* ViewController.swift */,
-				FE3E66DF1FDE227C00FD3477 /* Main.storyboard */,
-				FE63817A1FDEFB83009F34C7 /* SaveViewController.swift */,
-				FEDFD4331FDE479400040C29 /* ArticleServiceProtocol.swift */,
-				FEDFD4351FDE483400040C29 /* ArticleService.swift */,
+				FEC3A26D1FDFCB7700F77767 /* Controller */,
+				FEC3A2701FDFCBB400F77767 /* View */,
+				FEC3A26F1FDFCB9300F77767 /* Service */,
 				FEDFD4311FDE299900040C29 /* ArticleTableViewCell.swift */,
 				FE3E66E21FDE227C00FD3477 /* Assets.xcassets */,
-				FE3E66E41FDE227C00FD3477 /* LaunchScreen.storyboard */,
 				FE3E66E71FDE227C00FD3477 /* Info.plist */,
 			);
 			path = "Article-Management-API";
+			sourceTree = "<group>";
+		};
+		FEC3A26C1FDFCB4C00F77767 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				FEDFD42F1FDE243800040C29 /* Article.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		FEC3A26D1FDFCB7700F77767 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				FE3E66DD1FDE227C00FD3477 /* ViewController.swift */,
+				FE63817A1FDEFB83009F34C7 /* SaveViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		FEC3A26E1FDFCB8700F77767 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				FEF7D61E1FDEE20200D87E37 /* ArticlePresenterProtocol.swift */,
+				FEF7D6201FDEE22800D87E37 /* ArticlePresenter.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
+		FEC3A26F1FDFCB9300F77767 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				FEDFD4331FDE479400040C29 /* ArticleServiceProtocol.swift */,
+				FEDFD4351FDE483400040C29 /* ArticleService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		FEC3A2701FDFCBB400F77767 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FE3E66DF1FDE227C00FD3477 /* Main.storyboard */,
+				FE3E66E41FDE227C00FD3477 /* LaunchScreen.storyboard */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

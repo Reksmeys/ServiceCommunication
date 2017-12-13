@@ -31,4 +31,7 @@ class ArticlePresenter: ArticleServiceProtocol {
     func deleteArticle(id: Int){
         self.articleService?.deleteArticle(id: id)
     }
+    func insertArticle(articles: Article){
+        self.articleService?.saveArticle(articles: articles)
+    }
 }

@@ -11,10 +11,10 @@ import Foundation
 import Alamofire
 
 class ArticleService{
-    var article_get_url = "http://174.138.20.101:15000/v1/api/articles"
-    var articel_post_url = "http://174.138.20.101:15000/v1/api/articles"
-    var article_delete_url = "http://174.138.20.101:15000/v1/api/articles/"
-    var upload_image_url = "http://174.138.20.101:15000/v1/api/uploadfile/single"
+    var article_get_url = "http://api-ams.me/v1/api/articles"
+    var articel_post_url = "http://api-ams.me/v1/api/articles"
+    var article_delete_url = "http://api-ams.me/v1/api/articles"
+    var upload_image_url = "http://api-ams.me/v1/api/uploadfile/single"
     var delegate:ArticleServiceProtocol?
     // ===========with alamofire ===============
     
@@ -57,7 +57,7 @@ class ArticleService{
         
         //-----with alamofire-----------
         
-        Alamofire.request("http://174.138.20.101:15000/v1/api/articles", method: .get, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
+        Alamofire.request("\(article_get_url)?page=\(page)&limit=\(limit)", method: .get, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
             if response.result.isSuccess {
                 if let json = try? JSONSerialization.jsonObject(with: response.data!, options: .allowFragments) as! [String:Any] {
                     let objects = json["DATA"] as! NSArray
@@ -99,10 +99,59 @@ class ArticleService{
         task.resume()
     }
     
-    //------insert and update article----------
+    //------insert and update article----------(if have image to upload)
     func insertAndUpdateArticles(articles: Article, img: Data){
+        let url = URL(string: upload_image_url)
+        var request = URLRequest(url: url!)
+        request.httpMethod = "POST"
+        request.addValue("Basic QU1TQVBJQURNSU46QU1TQVBJUEBTU1dPUkQ=", forHTTPHeaderField: "Authorization")
+        //for image to upload
+        let boundary = "Boundary-\(UUID().uuidString)"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        var formData = Data()
+        
+        let imageData = img
+        let mimeType = "image/jpeg"
+        formData.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
+        formData.append("Content-Disposition: form-data; name=\"FILE\"; filename=\"Image.png\"\r\n".data(using: .utf8)!)
+        formData.append("Content-Type: \(mimeType)\r\n\r\n".data(using: .utf8)!)
+        formData.append(imageData)
+        formData.append("\r\n".data(using: .utf8)!)
+        formData.append("--\(boundary)--\r\n".data(using: .utf8)!)
+        
+        request.httpBody = formData
+        let session = URLSession.shared
+        let task = session.uploadTask(with: request, from: formData) { (data, response, error) in
+            if error == nil {
+                print("SUCCESS")
+                
+                if let json = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String:Any]{
+                    let image_url = json["DATA"] as! String
+                    articles.image = image_url
+                    if articles.id == 0 {
+                        self.saveArticle(articles: articles)
+                    }else {
+                        self.updateArticle(articles: articles)
+                    }
+                }
+                
+            }
+        }
+        task.resume()
+        
+        //---------------insert article with alamofire----------
+        
         
     }
+    //------------------------------------------
+    
+    //--------------update article-----------------
+    
+    func updateArticle(articles: Article){
+        
+    }
+    //---------------------------------------------
+    
     
     //------- delete article ------------
     func deleteArticle(id:Int) {
@@ -130,6 +179,7 @@ class ArticleService{
                 self.delegate?.responseMsg(msg: "Delete Successfully!")
             }
         }
+        
     }
 }
 

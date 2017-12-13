@@ -21,7 +21,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         articles = [Article]()
    
         self.articlePresenter = ArticlePresenter()
-        self.articlePresenter?.getArticle(page: 1, limit: 15)
+        self.articlePresenter?.getArticle(page: 3, limit: 17)
+       // self.articlePresenter?.insertArticle(articles: articles)
         self.articlePresenter?.delegate = self
     }
 
@@ -72,8 +73,5 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             self.present(alert, animated: true, completion: nil)
         }
     }
-    
-
-
 }
 
