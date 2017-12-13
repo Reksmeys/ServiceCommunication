@@ -26,12 +26,16 @@ class ArticlePresenter: ArticleServiceProtocol {
         self.articleService?.getArticle(page: page, limit: limit)
     }
     func responseMsg(msg: String) {
-        //response sth
+        self.delegate?.responseMsg(msg: msg)
     }
     func deleteArticle(id: Int){
         self.articleService?.deleteArticle(id: id)
     }
     func insertArticle(articles: Article){
         self.articleService?.saveArticle(articles: articles)
+    }
+    
+    func insertUpdateArticle(article:Article, img:Data) {
+        self.articleService?.insertAndUpdateArticles(articles: article, img: img)
     }
 }

@@ -137,6 +137,13 @@
                                     <constraint firstAttribute="width" secondItem="PDj-wr-mZs" secondAttribute="height" multiplier="239:128" id="xPK-TO-hts"/>
                                 </constraints>
                             </imageView>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="ចំណងជើង" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="meU-n3-C4a">
+                                <rect key="frame" x="80" y="317" width="239" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -155,16 +162,21 @@
                         <viewLayoutGuide key="safeArea" id="Wge-VM-ora"/>
                     </view>
                     <navigationItem key="navigationItem" title="រស្មី" id="WbS-tk-bWU">
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="HlC-c4-tYh"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="HlC-c4-tYh">
+                            <connections>
+                                <action selector="saveButton:" destination="DLY-K0-Hc4" id="B9c-Rv-zc9"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="articleImageView" destination="PDj-wr-mZs" id="jns-oK-Zqa"/>
                         <outlet property="titleLabel" destination="uhr-py-ehc" id="CMB-Gz-Qva"/>
+                        <outlet property="titleTextField" destination="meU-n3-C4a" id="sy3-FT-Bkn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="L3Z-8i-SYr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1288.8" y="133.5832083958021"/>
+            <point key="canvasLocation" x="1288.4057971014495" y="132.88043478260872"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="kMr-gT-1yt">

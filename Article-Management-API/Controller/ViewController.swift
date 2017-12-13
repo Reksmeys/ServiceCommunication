@@ -10,6 +10,7 @@ import UIKit
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ArticlePresenterProtocol {
   
+    
     @IBOutlet weak var articleTableView: UITableView!
     var articlePresenter: ArticlePresenter?
     var articles: [Article]?
@@ -19,7 +20,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         refreshControl = UIRefreshControl()
         self.articleTableView.addSubview(refreshControl!)
         articles = [Article]()
-   
+        self.refreshControl?.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+      
         self.articlePresenter = ArticlePresenter()
         self.articlePresenter?.getArticle(page: 3, limit: 17)
        // self.articlePresenter?.insertArticle(articles: articles)
@@ -40,12 +42,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.articleTableView.reloadData()
     }
     //call when table have been refresh
-    func refreshData(){
-        // configure sth
+    @objc func refreshData(){
+        self.articlePresenter?.getArticle(page: 3, limit: 17)
+        self.articleTableView.reloadData()
     }
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let edit = UITableViewRowAction(style: .normal, title: "edit") { (action, indexPath) in
-           //edit data
+            let article = self.articles![indexPath.row]
+            self.performSegue(withIdentifier: "saveSegue", sender: article)
+            
+            
         }
         let delete = UITableViewRowAction(style: .default, title: "Delete") { (action, indexPath) in
             //delete data
@@ -62,8 +68,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         return [edit, delete]
     }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "saveSegue"{
+            let saveController = segue.destination as! SaveViewController
+            saveController.articleInsertUpdate = sender as! Article
+        }
+    }
     
-    func responseMessage(msg: String) {
+    func responseMsg(msg: String) {
         DispatchQueue.main.async {
             let alert = UIAlertController(title: "Success", message: msg, preferredStyle: .alert)
             let ok = UIAlertAction(title: "OK", style: .default) { (action) in

@@ -9,5 +9,6 @@
 import Foundation
 protocol ArticlePresenterProtocol {
     func responseArticle(article: [Article])
+    func responseMsg(msg: String)
 }
 

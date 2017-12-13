@@ -15,6 +15,7 @@ class ArticleService{
     var articel_post_url = "http://api-ams.me/v1/api/articles"
     var article_delete_url = "http://api-ams.me/v1/api/articles"
     var upload_image_url = "http://api-ams.me/v1/api/uploadfile/single"
+    var article_put_url = "http://api-ams.me/v1/api/articles/"
     var delegate:ArticleServiceProtocol?
     // ===========with alamofire ===============
     
@@ -76,70 +77,46 @@ class ArticleService{
     //-----------insert articles-------------
     
     func saveArticle(articles: Article){
-        var newArticle: [String:Any] = [
-            "TITLE": articles.title,
+        let newArticle:[String:Any] = [
+            "TITLE": articles.title!,
             "CATEGORY_ID": 1,
             "IMAGE": articles.image!
         ]
-        let url = URL(string: articel_post_url)
-        var request = URLRequest(url: url!)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.addValue("Basic QU1TQVBJQURNSU46QU1TQVBJUEBTU1dPUkQ=", forHTTPHeaderField: "Authorization")
-        let jsonData = try? JSONSerialization.data(withJSONObject: newArticle, options: [])
-        request.httpBody = jsonData
-        let session = URLSession.shared
-        let task = session.dataTask(with: request) { (data, response, error) in
-            if error == nil{
-               //------------
-                self.delegate?.responseMsg(msg: "Insert Success")
+        // ------ With Alamofire --------
+        Alamofire.request(articel_post_url, method: .post, parameters: newArticle, encoding: JSONEncoding.default, headers: headers).responseJSON { (response) in
+            if response.result.isSuccess {
+                self.delegate?.responseMsg(msg: "Insert Successfully!")
             }
         }
-        task.resume()
     }
     
     //------insert and update article----------(if have image to upload)
     func insertAndUpdateArticles(articles: Article, img: Data){
-        let url = URL(string: upload_image_url)
-        var request = URLRequest(url: url!)
-        request.httpMethod = "POST"
-        request.addValue("Basic QU1TQVBJQURNSU46QU1TQVBJUEBTU1dPUkQ=", forHTTPHeaderField: "Authorization")
-        //for image to upload
-        let boundary = "Boundary-\(UUID().uuidString)"
-        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        var formData = Data()
         
-        let imageData = img
-        let mimeType = "image/jpeg"
-        formData.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
-        formData.append("Content-Disposition: form-data; name=\"FILE\"; filename=\"Image.png\"\r\n".data(using: .utf8)!)
-        formData.append("Content-Type: \(mimeType)\r\n\r\n".data(using: .utf8)!)
-        formData.append(imageData)
-        formData.append("\r\n".data(using: .utf8)!)
-        formData.append("--\(boundary)--\r\n".data(using: .utf8)!)
         
-        request.httpBody = formData
-        let session = URLSession.shared
-        let task = session.uploadTask(with: request, from: formData) { (data, response, error) in
-            if error == nil {
-                print("SUCCESS")
-                
-                if let json = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String:Any]{
-                    let image_url = json["DATA"] as! String
-                    articles.image = image_url
-                    if articles.id == 0 {
-                        self.saveArticle(articles: articles)
-                    }else {
-                        self.updateArticle(articles: articles)
+        Alamofire.upload(multipartFormData: { (multipart) in
+            multipart.append(img, withName: "FILE", fileName: ".jpg", mimeType: "image/jpeg")
+        }, to: upload_image_url,method:.post,headers:headers) { (encodingResult) in
+            switch encodingResult {
+            case .success(request: let upload, streamingFromDisk: _ , streamFileURL: _):
+                upload.responseJSON(completionHandler: { (response) in
+                    if let data = try? JSONSerialization.jsonObject(with: response.data!, options: .allowFragments) as! [String:Any] {
+                        let image_url = data["DATA"] as! String
+                        articles.image = image_url
+                        if articles.id == 0 {
+                            self.saveArticle(articles: articles)
+                        }else {
+                            self.updateArticle(articles: articles)
+                        }
                     }
-                }
-                
+                })
+            case .failure(let error):
+                print(error)
             }
         }
-        task.resume()
+     
         
-        //---------------insert article with alamofire----------
+      
         
         
     }
@@ -148,7 +125,16 @@ class ArticleService{
     //--------------update article-----------------
     
     func updateArticle(articles: Article){
-        
+        let newArticle:[String:Any] = [
+            "TITLE": articles.title!,
+            "CATEGORY_ID": 1,
+            "IMAGE": articles.image!
+        ]
+        Alamofire.request("\(article_put_url)\(articles.id!)", method: .put, parameters: newArticle, encoding: JSONEncoding.default, headers: headers).responseJSON { (response) in
+            if response.result.isSuccess {
+                self.delegate?.responseMsg(msg: "Update Successfully!")
+            }
+        }
     }
     //---------------------------------------------
     
